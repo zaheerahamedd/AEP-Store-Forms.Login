@@ -3,6 +3,79 @@
 <html lang="en">
 <head>
    <script src="https://assets.adobedtm.com/de3a66fdc88b/c0862ab55be9/launch-db1a1049e36a-development.min.js" async></script>
+   <script>
+// ============================================
+// ADOBE DATA LAYER - MASTER CODE
+// ============================================
+
+// STEP 1: Initialize (Always runs first - every page)
+window.adobeDataLayer = window.adobeDataLayer || [];
+
+// STEP 2: Page View + User Info (Every page la venum)
+window.adobeDataLayer.push({
+  event: "pageView",
+  page: {
+    pageName: document.title,          // ⚠️ auto - page title eduthukum
+    pageURL: window.location.href,
+    pageType: "home",                  // ⚠️ EDIT: home/category/product/cart/checkout/thankyou
+    category: "",                      // ⚠️ EDIT
+    language: "ta-IN"
+  },
+  user: {
+    loginStatus: "guest",              // ⚠️ EDIT: dynamic - loggedIn/guest
+    userId: "",                        // ⚠️ EDIT: dynamic
+    userType: "new"                    // ⚠️ EDIT: dynamic
+  }
+});
+
+// STEP 3: Product View (Product page la matum idhu run aagum)
+if (window.location.pathname.includes("/product/")) {   // ⚠️ EDIT: unga product page URL pattern
+  window.adobeDataLayer.push({
+    event: "productView",
+    product: {
+      productId: "",                   // ⚠️ EDIT: dynamic
+      productName: "",                 // ⚠️ EDIT: dynamic
+      productPrice: "",                // ⚠️ EDIT: dynamic
+      productCategory: "",             // ⚠️ EDIT: dynamic
+      productBrand: "",                // ⚠️ EDIT: dynamic
+      availability: "inStock"
+    }
+  });
+}
+
+// STEP 4: Add to Cart (Button click)
+document.addEventListener("click", function(e) {
+  if (e.target.matches(".add-to-cart-btn")) {   // ⚠️ EDIT: unga button oda class name
+    window.adobeDataLayer.push({
+      event: "addToCart",
+      cart: {
+        productId: "",                 // ⚠️ EDIT: dynamic
+        quantity: 1,                   // ⚠️ EDIT: dynamic
+        price: "",                     // ⚠️ EDIT: dynamic
+        cartTotal: ""                  // ⚠️ EDIT: dynamic
+      }
+    });
+  }
+});
+
+// STEP 5: Purchase (Thank you page la matum - duplicate protection oda)
+if (window.location.pathname.includes("/thank-you")) {   // ⚠️ EDIT: unga thank you page URL
+  var orderId = "";   // ⚠️ EDIT: dynamic real order ID
+  if (orderId && !sessionStorage.getItem("orderTracked_" + orderId)) {
+    window.adobeDataLayer.push({
+      event: "purchase",
+      order: {
+        orderId: orderId,
+        orderTotal: "",               // ⚠️ EDIT: dynamic
+        currency: "INR",
+        paymentMethod: "",            // ⚠️ EDIT: dynamic
+        products: []                  // ⚠️ EDIT: dynamic array
+      }
+    });
+    sessionStorage.setItem("orderTracked_" + orderId, "true");
+  }
+}
+</script>
    <title>AEP Website</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
